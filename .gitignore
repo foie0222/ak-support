@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/xls/calc_after.xlsm
+/image/source.png
+/.idea
