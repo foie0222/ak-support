@@ -15,7 +15,7 @@ def main():
     # realtime_odds = get_realtime_odds(yumachan.opdt, yumachan.rcoursecd, yumachan.rno)
 
     # エクセルに転記
-    wb = openpyxl.load_workbook('xls/calc.xlsm')
+    wb = openpyxl.load_workbook('xls/calc.xlsm', keep_vba=True)
     ws = wb['sheet']
 
     # 出走頭数を取得
