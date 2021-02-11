@@ -25,11 +25,11 @@ def main():
     # 単勝オッズを転記
     for i, odds in enumerate(odds_manager.tan_odds_list):
         ws.cell(row=2 + i, column=4, value=float(odds.odds))
-    #
-    # # 複勝オッズを転記
-    # for i, fuku_min_odds in enumerate(realtime_odds.fuku_min_odds_list):
-    #     ws.cell(row=2 + i, column=16, value=float(fuku_min_odds.fuku_min_odds))
-    #
+
+    # 複勝オッズを転記
+    for i, odds in enumerate(odds_manager.fuku_min_odds_list):
+        ws.cell(row=2 + i, column=16, value=float(odds.odds))
+
     # # 馬連オッズを転記
     # count = 0
     # for i in range(horse_num - 1):

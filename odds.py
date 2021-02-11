@@ -7,8 +7,9 @@ from selenium import webdriver
 
 
 class OddsManager:
-    def __init__(self, tan_odds_list):
+    def __init__(self, tan_odds_list, fuku_min_odds_list):
         self.tan_odds_list = tan_odds_list
+        self.fuku_min_odds_list = fuku_min_odds_list
 
 
 class Odds:
@@ -23,7 +24,8 @@ class Odds:
 
 def get_odds_manager(opdt, race_course, rno):
     netkeiba_race_id = get_netkeiba_race_id(opdt, race_course, rno)
-    return OddsManager(get_tan_odds_list(netkeiba_race_id))
+    return OddsManager(get_tan_odds_list(netkeiba_race_id),
+                       get_fuku_min_odds_list(netkeiba_race_id))
 
 
 # netkeibaのrace_idを取得
@@ -81,6 +83,42 @@ def get_tan_odds_list(netkeiba_race_id):
     driver.quit()
 
     return tan_odds_list
+
+
+# 複勝下限オッズを取得
+def get_fuku_min_odds_list(netkeiba_race_id):
+    url = f'https://race.netkeiba.com/odds/index.html?type=b1&race_id={netkeiba_race_id}&rf=shutuba_submenu'
+
+    options = webdriver.ChromeOptions()
+    options.add_argument("--no-sandbox")
+    options.add_argument('--headless')
+
+    driver = get_webdriver(options)
+    driver.get(url)
+
+    html = driver.page_source.encode('utf-8')
+    soup = BeautifulSoup(html, "html.parser")
+
+    time.sleep(2)
+
+    blocks = soup.find('div', id='odds_fuku_block').find_all('td', class_='Odds')
+
+    fuku_min_odds_list = []
+    for index, block in enumerate(blocks):
+        odds = block.span
+
+        # 出走取り消しなどでオブジェクトが取得できない時はオッズを0にセットする
+        if odds is None:
+            fuku_min_odds_list.append(Odds(str(index + 1).zfill(2), 0))
+            continue
+
+        # オッズを取得
+        fuku_min_odds = float(odds.string.split(" ")[0])
+        fuku_min_odds_list.append(Odds(str(index + 1).zfill(2), fuku_min_odds))
+
+    driver.quit()
+
+    return fuku_min_odds_list
 
 
 def get_webdriver(options):
