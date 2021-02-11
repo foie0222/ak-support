@@ -59,10 +59,8 @@ def main():
     wb.save('xls/calc_after.xlsm')
     wb.close()
 
-    print('完了！')
-
     elapsed_time = time.time() - start
-    print(f'処理時間 : {elapsed_time}[秒]')
+    print(f'完了！処理時間 : {round(elapsed_time, 2)}[秒]')
 
 
 if __name__ == '__main__':
