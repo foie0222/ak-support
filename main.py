@@ -1,20 +1,17 @@
 import openpyxl
-
-from odds import get_realtime_odds
+from odds import get_odds_manager
 from yumachan import get_yumachan
 
 
 def main():
-    # ゆまちゃんのデータを取ってくる
+
+    print('ゆまちゃんデータ取得中...')
     yumachan = get_yumachan()
 
-    for horse in sorted(yumachan.horse_list):
-        print(horse.to_string())
+    print('オッズ取得中...')
+    odds_manager = get_odds_manager(yumachan.opdt, yumachan.race_course, yumachan.rno)
 
-    # # リアルタイムオッズを取得
-    # realtime_odds = get_realtime_odds(yumachan.opdt, yumachan.rcoursecd, yumachan.rno)
-
-    # エクセルに転記
+    print('エクセルに転記中...')
     wb = openpyxl.load_workbook('xls/calc.xlsm', keep_vba=True)
     ws = wb['sheet']
 
@@ -24,10 +21,10 @@ def main():
     # 馬の勝率を転記
     for horse in sorted(yumachan.horse_list):
         ws.cell(row=1 + int(horse.umano), column=9, value=float(horse.probability))
-    #
-    # # 単勝オッズを転記
-    # for i, tanodds in enumerate(realtime_odds.tan_odds_list):
-    #     ws.cell(row=2 + i, column=4, value=float(tanodds.tanodds))
+
+    # 単勝オッズを転記
+    for i, odds in enumerate(odds_manager.tan_odds_list):
+        ws.cell(row=2 + i, column=4, value=float(odds.odds))
     #
     # # 複勝オッズを転記
     # for i, fuku_min_odds in enumerate(realtime_odds.fuku_min_odds_list):
@@ -58,6 +55,8 @@ def main():
 
     wb.save('xls/calc_after.xlsm')
     wb.close()
+
+    print('全部完了！')
 
 
 if __name__ == '__main__':
