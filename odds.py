@@ -7,8 +7,8 @@ from selenium import webdriver
 
 
 class OddsManager:
-    def __init__(self, tanodds_list):
-        self.tanodds_list = tanodds_list
+    def __init__(self, tan_odds_list):
+        self.tan_odds_list = tan_odds_list
 
 
 class Odds:
@@ -19,6 +19,11 @@ class Odds:
     def to_string(self):
         return 'Odds=[umano={}, odds={}]'.format(
             self.umano, self.odds)
+
+
+def get_odds_manager(opdt, race_course, rno):
+    netkeiba_race_id = get_netkeiba_race_id(opdt, race_course, rno)
+    return OddsManager(get_tan_odds_list(netkeiba_race_id))
 
 
 # netkeibaのrace_idを取得
@@ -40,10 +45,6 @@ def get_netkeiba_race_id(opdt, race_course, rno):
 
     netkeiba_race_id = f'{year}{race_course.cd}{kaisai_kai.zfill(2)}{kaisai_nichi.zfill(2)}{rno}'
     return netkeiba_race_id
-
-
-def get_oddsmanager(opdt, rcoursecd, rno):
-    return OddsManager(get_tan_odds_list(opdt, rcoursecd, rno))
 
 
 # 単勝オッズを取得
