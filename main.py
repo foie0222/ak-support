@@ -37,14 +37,13 @@ def main():
             ws.cell(row=65 + k + i, column=2 + i, value=float(odds_manager.umaren_odds_list[count].odds))
             count += 1
 
-    #
-    # # ワイドオッズを転記
-    # count = 0
-    # for i in range(horse_num - 1):
-    #     for k in range(horse_num - i - 1):
-    #         ws.cell(row=145 + k + i, column=2 + i, value=float(realtime_odds.wide_odds_list[count].wideodds))
-    #         count += 1
-    #
+    # ワイドオッズを転記
+    count = 0
+    for i in range(horse_num - 1):
+        for k in range(horse_num - i - 1):
+            ws.cell(row=145 + k + i, column=2 + i, value=float(odds_manager.wide_min_odds_list[count].odds))
+            count += 1
+
     # # 3連複オッズを転記
     # count = 0
     # for i in range(horse_num - 1):
@@ -57,7 +56,7 @@ def main():
     wb.save('xls/calc_after.xlsm')
     wb.close()
 
-    print('全部完了！')
+    print('完了！')
 
 
 if __name__ == '__main__':
