@@ -30,12 +30,13 @@ def main():
     for i, odds in enumerate(odds_manager.fuku_min_odds_list):
         ws.cell(row=2 + i, column=16, value=float(odds.odds))
 
-    # # 馬連オッズを転記
-    # count = 0
-    # for i in range(horse_num - 1):
-    #     for k in range(horse_num - i - 1):
-    #         ws.cell(row=65 + k + i, column=2 + i, value=float(realtime_odds.umaren_odds_list[count].umaren_odds))
-    #         count += 1
+    # 馬連オッズを転記
+    count = 0
+    for i in range(horse_num - 1):
+        for k in range(horse_num - i - 1):
+            ws.cell(row=65 + k + i, column=2 + i, value=float(odds_manager.umaren_odds_list[count].odds))
+            count += 1
+
     #
     # # ワイドオッズを転記
     # count = 0

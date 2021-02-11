@@ -7,9 +7,10 @@ from selenium import webdriver
 
 
 class OddsManager:
-    def __init__(self, tan_odds_list, fuku_min_odds_list):
+    def __init__(self, tan_odds_list, fuku_min_odds_list, umaren_odds_list):
         self.tan_odds_list = tan_odds_list
         self.fuku_min_odds_list = fuku_min_odds_list
+        self.umaren_odds_list = umaren_odds_list
 
 
 class Odds:
@@ -25,7 +26,8 @@ class Odds:
 def get_odds_manager(opdt, race_course, rno):
     netkeiba_race_id = get_netkeiba_race_id(opdt, race_course, rno)
     return OddsManager(get_tan_odds_list(netkeiba_race_id),
-                       get_fuku_min_odds_list(netkeiba_race_id))
+                       get_fuku_min_odds_list(netkeiba_race_id),
+                       get_umaren_odds_list(netkeiba_race_id))
 
 
 # netkeibaのrace_idを取得
@@ -119,6 +121,39 @@ def get_fuku_min_odds_list(netkeiba_race_id):
     driver.quit()
 
     return fuku_min_odds_list
+
+
+# 馬連オッズを取得
+def get_umaren_odds_list(netkeiba_race_id):
+    umaren_odds_list = []
+    url = f'https://race.netkeiba.com/odds/index.html?type=b4&race_id={netkeiba_race_id}&housiki=c0'
+
+    options = webdriver.ChromeOptions()
+    options.add_argument("--no-sandbox")
+    options.add_argument('--headless')
+
+    driver = get_webdriver(options)
+    driver.get(url)
+
+    html = driver.page_source.encode('utf-8')
+    soup = BeautifulSoup(html, "html.parser")
+
+    time.sleep(2)
+
+    jiku_blocks = soup.find_all('table', class_='Odds_Table')
+
+    for index, jiku_block in enumerate(jiku_blocks):
+        jiku_umano = str(index + 1).zfill(2)
+        himo_numbers = jiku_block.find_all('td', class_='Waku_Normal')
+        himo_odds = jiku_block.find_all('span', class_='transition-color')
+        for i in range(len(himo_numbers)):
+            himo_umano = himo_numbers[i].string.zfill(2)
+            odds = float(himo_odds[i].string)
+            umaren_odds_list.append(Odds(f'{jiku_umano}-{himo_umano}', odds))
+
+    driver.quit()
+
+    return umaren_odds_list
 
 
 def get_webdriver(options):
