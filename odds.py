@@ -26,12 +26,21 @@ class Odds:
 
 
 def get_odds_manager(opdt, race_course, rno, horse_num):
+    options = webdriver.ChromeOptions()
+    options.add_argument('--no-sandbox')
+    options.add_argument('--headless')
+
+    driver = get_webdriver(options)
+
     netkeiba_race_id = get_netkeiba_race_id(opdt, race_course, rno)
-    tan_odds_list = get_tan_odds_list(netkeiba_race_id)
-    fuku_min_odds_list = get_fuku_min_odds_list(netkeiba_race_id)
-    umaren_odds_list = get_umaren_odds_list(netkeiba_race_id)
-    wide_min_odds_list = get_wide_min_odds_list(netkeiba_race_id)
-    trio_odds_list = get_trio_odds_list(netkeiba_race_id, horse_num)
+    tan_odds_list = get_tan_odds_list(netkeiba_race_id, driver)
+    fuku_min_odds_list = get_fuku_min_odds_list(netkeiba_race_id, driver)
+    umaren_odds_list = get_umaren_odds_list(netkeiba_race_id, driver)
+    wide_min_odds_list = get_wide_min_odds_list(netkeiba_race_id, driver)
+    trio_odds_list = get_trio_odds_list(netkeiba_race_id, horse_num, driver)
+
+    driver.quit()
+
     return OddsManager(tan_odds_list, fuku_min_odds_list, umaren_odds_list, wide_min_odds_list, trio_odds_list)
 
 
@@ -57,14 +66,9 @@ def get_netkeiba_race_id(opdt, race_course, rno):
 
 
 # 単勝オッズを取得
-def get_tan_odds_list(netkeiba_race_id):
+def get_tan_odds_list(netkeiba_race_id, driver):
     url = f'https://race.netkeiba.com/odds/index.html?type=b1&race_id={netkeiba_race_id}&rf=shutuba_submenu'
 
-    options = webdriver.ChromeOptions()
-    options.add_argument('--no-sandbox')
-    options.add_argument('--headless')
-
-    driver = get_webdriver(options)
     driver.get(url)
 
     html = driver.page_source.encode('utf-8')
@@ -87,20 +91,13 @@ def get_tan_odds_list(netkeiba_race_id):
         tan_odds = float(odds.string)
         tan_odds_list.append(Odds(str(index + 1).zfill(2), tan_odds))
 
-    driver.quit()
-
     return tan_odds_list
 
 
 # 複勝下限オッズを取得
-def get_fuku_min_odds_list(netkeiba_race_id):
+def get_fuku_min_odds_list(netkeiba_race_id, driver):
     url = f'https://race.netkeiba.com/odds/index.html?type=b1&race_id={netkeiba_race_id}&rf=shutuba_submenu'
 
-    options = webdriver.ChromeOptions()
-    options.add_argument('--no-sandbox')
-    options.add_argument('--headless')
-
-    driver = get_webdriver(options)
     driver.get(url)
 
     html = driver.page_source.encode('utf-8')
@@ -123,21 +120,14 @@ def get_fuku_min_odds_list(netkeiba_race_id):
         fuku_min_odds = float(odds.string.split(' ')[0])
         fuku_min_odds_list.append(Odds(str(index + 1).zfill(2), fuku_min_odds))
 
-    driver.quit()
-
     return fuku_min_odds_list
 
 
 # 馬連オッズを取得
-def get_umaren_odds_list(netkeiba_race_id):
+def get_umaren_odds_list(netkeiba_race_id, driver):
     umaren_odds_list = []
     url = f'https://race.netkeiba.com/odds/index.html?type=b4&race_id={netkeiba_race_id}&housiki=c0'
 
-    options = webdriver.ChromeOptions()
-    options.add_argument('--no-sandbox')
-    options.add_argument('--headless')
-
-    driver = get_webdriver(options)
     driver.get(url)
 
     html = driver.page_source.encode('utf-8')
@@ -156,21 +146,14 @@ def get_umaren_odds_list(netkeiba_race_id):
             odds = float(himo_odds[i].string)
             umaren_odds_list.append(Odds(f'{jiku_umano}-{himo_umano}', odds))
 
-    driver.quit()
-
     return umaren_odds_list
 
 
 # ワイド下限オッズを取得
-def get_wide_min_odds_list(netkeiba_race_id):
+def get_wide_min_odds_list(netkeiba_race_id, driver):
     wide_min_odds_list = []
     url = f'https://race.netkeiba.com/odds/index.html?type=b5&race_id={netkeiba_race_id}&housiki=c0&rf=shutuba_submenu'
 
-    options = webdriver.ChromeOptions()
-    options.add_argument('--no-sandbox')
-    options.add_argument('--headless')
-
-    driver = get_webdriver(options)
     driver.get(url)
 
     html = driver.page_source.encode('utf-8')
@@ -189,20 +172,13 @@ def get_wide_min_odds_list(netkeiba_race_id):
             odds = float(umaren_odds[i].string)
             wide_min_odds_list.append(Odds(f'{jiku_umano}-{himo_umano}', odds))
 
-    driver.quit()
-
     return wide_min_odds_list
 
 
 # 3連複オッズを取得
-def get_trio_odds_list(netkeiba_race_id, num_of_horse):
+def get_trio_odds_list(netkeiba_race_id, num_of_horse, driver):
     trio_odds_list = []
 
-    options = webdriver.ChromeOptions()
-    options.add_argument('--no-sandbox')
-    options.add_argument('--headless')
-
-    driver = get_webdriver(options)
     for jiku_no in range(1, num_of_horse + 1):
         jiku1_umano = str(jiku_no).zfill(2)
         url = f'https://race.netkeiba.com/odds/index.html?type=b7&race_id={netkeiba_race_id}&housiki=c0&rf=shutuba_submenu&jiku={jiku_no}'
@@ -223,8 +199,6 @@ def get_trio_odds_list(netkeiba_race_id, num_of_horse):
                 jiku3_umano = jiku3_umanos[i].string.zfill(2)
                 odds = float(trio_odds[i].string)
                 trio_odds_list.append(Odds(f'{jiku1_umano}-{jiku2_umano}-{jiku3_umano}', odds))
-
-    driver.quit()
 
     return trio_odds_list
 
