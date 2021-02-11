@@ -1,22 +1,25 @@
+import time
+
 import openpyxl
 from odds import get_odds_manager
 from yumachan import get_yumachan
 
 
 def main():
+    start = time.time()
 
     print('ゆまちゃんデータ取得中...')
     yumachan = get_yumachan()
 
+    # 出走頭数を取得
+    horse_num = len(yumachan.horse_list)
+
     print('オッズ取得中...')
-    odds_manager = get_odds_manager(yumachan.opdt, yumachan.race_course, yumachan.rno)
+    odds_manager = get_odds_manager(yumachan.opdt, yumachan.race_course, yumachan.rno, horse_num)
 
     print('エクセルに転記中...')
     wb = openpyxl.load_workbook('xls/calc.xlsm', keep_vba=True)
     ws = wb['sheet']
-
-    # 出走頭数を取得
-    horse_num = len(yumachan.horse_list)
 
     # 馬の勝率を転記
     for horse in sorted(yumachan.horse_list):
@@ -44,19 +47,22 @@ def main():
             ws.cell(row=145 + k + i, column=2 + i, value=float(odds_manager.wide_min_odds_list[count].odds))
             count += 1
 
-    # # 3連複オッズを転記
-    # count = 0
-    # for i in range(horse_num - 1):
-    #     for k in range(horse_num - i - 1):
-    #         for l in range(horse_num - i - k - 2):
-    #             ws.cell(row=307 + 81 * i + k + l, column=2 + i + k,
-    #                     value=float(realtime_odds.trio_odds_list[count].trio_odds))
-    #             count += 1
+    # 3連複オッズを転記
+    count = 0
+    for i in range(horse_num):
+        for k in range(horse_num - 1):
+            for l in range(horse_num - k - 2):
+                ws.cell(row=307 + 80 * i + k + l, column=2 + k,
+                        value=float(odds_manager.trio_odds_list[count].odds))
+                count += 1
 
     wb.save('xls/calc_after.xlsm')
     wb.close()
 
     print('完了！')
+
+    elapsed_time = time.time() - start
+    print(f'処理時間 : {elapsed_time}[秒]')
 
 
 if __name__ == '__main__':
