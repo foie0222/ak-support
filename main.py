@@ -1,6 +1,7 @@
 import time
 
 import openpyxl
+
 from odds import get_odds_manager
 from yumachan import get_yumachan
 
@@ -45,6 +46,15 @@ def main():
     for i in range(horse_num - 1):
         for k in range(horse_num - i - 1):
             ws.cell(row=145 + k + i, column=2 + i, value=float(odds_manager.wide_min_odds_list[count].odds))
+            count += 1
+
+    # 馬単オッズを転記
+    count = 0
+    for i in range(horse_num):
+        for k in range(horse_num):
+            if i == k:
+                continue  # 軸紐が一致する箇所はスキップ
+            ws.cell(row=225 + k, column=2 + i, value=float(odds_manager.umatan_odds_list[count].odds))
             count += 1
 
     # 3連複オッズを転記
