@@ -1,30 +1,32 @@
+import sys
 import time
-
 import openpyxl
-
 from odds import get_odds_manager
-from yumachan import get_yumachan
+from yumachan import get_yumachan, get_race_course_from_cd
 
 
 def main():
     start = time.time()
 
-    print('ゆまちゃんデータ取得中...')
     yumachan = get_yumachan()
+    odds_manager = get_odds_manager(yumachan.opdt, yumachan.race_course, yumachan.rno)
 
-    # 出走頭数を取得
-    horse_num = len(yumachan.horse_list)
-
-    print('オッズ取得中...')
-    odds_manager = get_odds_manager(yumachan.opdt, yumachan.race_course, yumachan.rno, horse_num)
-
-    print('エクセルに転記中...')
     wb = openpyxl.load_workbook('xls/calc.xlsm', keep_vba=True)
     ws = wb['sheet']
 
-    # 馬の勝率を転記
-    for horse in sorted(yumachan.horse_list):
-        ws.cell(row=1 + int(horse.umano), column=9, value=float(horse.probability))
+    only_yuma_post(yumachan, ws)
+    only_odds_post(odds_manager, ws)
+
+    wb.save('xls/calc_after.xlsm')
+    wb.close()
+
+    elapsed_time = time.time() - start
+    print(f'完了！処理時間 : {round(elapsed_time, 2)}[秒]')
+
+
+def only_odds_post(odds_manager, ws):
+    print('オッズをエクセルに転記中...')
+    horse_num = len(odds_manager.tan_odds_list)
 
     # 単勝オッズを転記
     for i, odds in enumerate(odds_manager.tan_odds_list):
@@ -66,12 +68,30 @@ def main():
                         value=float(odds_manager.trio_odds_list[count].odds))
                 count += 1
 
-    wb.save('xls/calc_after.xlsm')
-    wb.close()
 
-    elapsed_time = time.time() - start
-    print(f'完了！処理時間 : {round(elapsed_time, 2)}[秒]')
+def only_yuma_post(yumachan, ws):
+    print('ゆまちゃんデータをエクセルに転記中...')
+    # 馬の勝率を転記
+    for horse in sorted(yumachan.horse_list):
+        ws.cell(row=1 + int(horse.umano), column=9, value=float(horse.probability))
 
 
 if __name__ == '__main__':
-    main()
+    if sys.argv[1] == 'odds_only':
+        start = time.time()
+
+        odds_manager = get_odds_manager(sys.argv[2], get_race_course_from_cd(sys.argv[3]), sys.argv[4])
+
+        wb = openpyxl.load_workbook('xls/calc.xlsm', keep_vba=True)
+        ws = wb['sheet']
+
+        only_odds_post(odds_manager, ws)
+
+        wb.save('xls/calc_odds.xlsm')
+        wb.close()
+
+        elapsed_time = time.time() - start
+        print(f'完了！処理時間 : {round(elapsed_time, 2)}[秒]')
+    elif sys.argv[1] == 'main':
+        main()
+

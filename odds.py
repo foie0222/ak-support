@@ -26,7 +26,8 @@ class Odds:
             self.umano, self.odds)
 
 
-def get_odds_manager(opdt, race_course, rno, horse_num):
+def get_odds_manager(opdt, race_course, rno):
+    print('オッズ取得中...')
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
     options.add_argument('--headless')
@@ -45,7 +46,7 @@ def get_odds_manager(opdt, race_course, rno, horse_num):
     umaren_odds_list = get_umaren_odds_list(netkeiba_race_id, driver)
     wide_min_odds_list = get_wide_min_odds_list(netkeiba_race_id, driver)
     umatan_odds_list = get_umatan_odds_list(netkeiba_race_id, driver)
-    trio_odds_list = get_trio_odds_list(netkeiba_race_id, horse_num, driver)
+    trio_odds_list = get_trio_odds_list(netkeiba_race_id, len(tan_odds_list), driver)
 
     driver.quit()
 

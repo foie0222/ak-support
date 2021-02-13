@@ -132,3 +132,4 @@ dmypy.json
 /.idea
 chromedriver
 /driver
+/xls/calc_odds.xlsm
