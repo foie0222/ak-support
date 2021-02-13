@@ -9,6 +9,7 @@ ECHO ◇ak-support - 実行モード選択 -
 ECHO ======================================================================
 ECHO [0] ゆまちゃんデータとオッズの両方
 ECHO [1] オッズデータのみ
+ECHO [2] ゆまちゃんデータのみ（先にオッズデータを取得しておく必要があります）
 ECHO:
 
 SET /P MODE="実行モードを選択してください＞"
@@ -37,6 +38,10 @@ IF %MODE% == 1 (
 
     cd ..
     python main.py odds_only !OPDT! !COURSE! !RNO!
+)
+IF %MODE% == 2 (
+    cd ..
+    python main.py yuma_only
 )
 
 PAUSE
