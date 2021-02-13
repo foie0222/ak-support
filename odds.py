@@ -83,14 +83,14 @@ def login_netkeiba(driver):
     driver.find_element_by_name('pswd').send_keys(config.NETKEIBA_LOGIN_PASSWORD)
     driver.find_element_by_css_selector('input[alt="ログイン"]').click()
 
-    time.sleep(2)
+    time.sleep(3)
 
 # 単勝オッズを取得
 def get_tan_odds_list(netkeiba_race_id, driver):
     url = f'https://race.netkeiba.com/odds/index.html?type=b1&race_id={netkeiba_race_id}&rf=shutuba_submenu'
 
     driver.get(url)
-    time.sleep(2)
+    time.sleep(3)
 
     html = driver.page_source.encode('utf-8')
     soup = BeautifulSoup(html, 'html.parser')
@@ -118,7 +118,7 @@ def get_fuku_min_odds_list(netkeiba_race_id, driver):
     url = f'https://race.netkeiba.com/odds/index.html?type=b1&race_id={netkeiba_race_id}&rf=shutuba_submenu'
 
     driver.get(url)
-    time.sleep(2)
+    time.sleep(3)
 
     html = driver.page_source.encode('utf-8')
     soup = BeautifulSoup(html, 'html.parser')
@@ -147,7 +147,7 @@ def get_umaren_odds_list(netkeiba_race_id, driver):
     url = f'https://race.netkeiba.com/odds/index.html?type=b4&race_id={netkeiba_race_id}&housiki=c0'
 
     driver.get(url)
-    time.sleep(2)
+    time.sleep(3)
 
     html = driver.page_source.encode('utf-8')
     soup = BeautifulSoup(html, 'html.parser')
@@ -172,7 +172,7 @@ def get_wide_min_odds_list(netkeiba_race_id, driver):
     url = f'https://race.netkeiba.com/odds/index.html?type=b5&race_id={netkeiba_race_id}&housiki=c0&rf=shutuba_submenu'
 
     driver.get(url)
-    time.sleep(2)
+    time.sleep(3)
 
     html = driver.page_source.encode('utf-8')
     soup = BeautifulSoup(html, 'html.parser')
@@ -201,7 +201,7 @@ def get_umatan_odds_list(netkeiba_race_id, driver):
     html = driver.page_source.encode('utf-8')
     soup = BeautifulSoup(html, 'html.parser')
 
-    time.sleep(2)
+    time.sleep(3)
 
     jiku_blocks = soup.find_all('table', class_='Odds_Table')
 
@@ -225,7 +225,7 @@ def get_trio_odds_list(netkeiba_race_id, num_of_horse, driver):
         jiku1_umano = str(jiku_no).zfill(2)
         url = f'https://race.netkeiba.com/odds/index.html?type=b7&race_id={netkeiba_race_id}&housiki=c0&rf=shutuba_submenu&jiku={jiku_no}'
         driver.get(url)
-        time.sleep(2)
+        time.sleep(3)
 
         html = driver.page_source.encode('utf-8')
         soup = BeautifulSoup(html, 'html.parser')
