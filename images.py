@@ -1,9 +1,7 @@
-import json
-import os
 import base64
+import json
 import requests
-from os.path import join, dirname
-from dotenv import load_dotenv
+import config
 
 
 # png画像を解析する
@@ -19,15 +17,10 @@ def save_png(url):
 
 GOOGLE_CLOUD_VISION_API_URL = 'https://vision.googleapis.com/v1/images:annotate?key='
 
-# 環境変数の読み取り
-dotenv_path = join(dirname(__file__), '.env')
-load_dotenv(dotenv_path)
-API_KEY = os.environ.get("GOOGLE_API_KEY")
-
 
 # APIを呼び、認識結果をjson型で返す
 def request_cloud_vison_api(image_base64):
-    api_url = GOOGLE_CLOUD_VISION_API_URL + API_KEY
+    api_url = GOOGLE_CLOUD_VISION_API_URL + config.GOOGLE_API_KEY
     req_body = json.dumps({
         'requests': [{
             'image': {

@@ -1,6 +1,6 @@
 import os
 import time
-
+import config
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -33,7 +33,13 @@ def get_odds_manager(opdt, race_course, rno, horse_num):
 
     driver = get_webdriver(options)
 
+    # netkeibaのrace_idを取得
     netkeiba_race_id = get_netkeiba_race_id(opdt, race_course, rno)
+
+    # netkeibaにログイン
+    login_netkeiba(driver)
+
+    # オッズをスクレイピング
     tan_odds_list = get_tan_odds_list(netkeiba_race_id, driver)
     fuku_min_odds_list = get_fuku_min_odds_list(netkeiba_race_id, driver)
     umaren_odds_list = get_umaren_odds_list(netkeiba_race_id, driver)
@@ -66,6 +72,17 @@ def get_netkeiba_race_id(opdt, race_course, rno):
     netkeiba_race_id = f'{year}{race_course.cd}{kaisai_kai.zfill(2)}{kaisai_nichi.zfill(2)}{rno}'
     return netkeiba_race_id
 
+
+def login_netkeiba(driver):
+    url = 'https://regist.netkeiba.com/account/?pid=login'
+    driver.get(url)
+
+    # ログイン情報を入力
+    driver.find_element_by_name('login_id').send_keys(config.NETKEIBA_LOGIN_ID)
+    driver.find_element_by_name('pswd').send_keys(config.NETKEIBA_LOGIN_PASSWORD)
+    driver.find_element_by_css_selector('input[alt="ログイン"]').click()
+
+    time.sleep(2)
 
 # 単勝オッズを取得
 def get_tan_odds_list(netkeiba_race_id, driver):
