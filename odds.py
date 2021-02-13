@@ -70,7 +70,7 @@ def get_netkeiba_race_id(opdt, race_course, rno):
             kaisai_kai = kaisai_info[:kaisai_info.find('回')]
             kaisai_nichi = kaisai_info[kaisai_info.find(race_course.name) + 2:kaisai_info.find('日')]
 
-    netkeiba_race_id = f'{year}{race_course.cd}{kaisai_kai.zfill(2)}{kaisai_nichi.zfill(2)}{rno}'
+    netkeiba_race_id = f'{year}{race_course.cd}{kaisai_kai.zfill(2)}{kaisai_nichi.zfill(2)}{rno.zfill(2)}'
     return netkeiba_race_id
 
 
