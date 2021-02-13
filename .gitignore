@@ -127,9 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-/xls/calc_after.xlsm
+/xls/calc_after.xlsx
 /image/source.png
 /.idea
 chromedriver
 /driver
-/xls/calc_odds.xlsm
+/xls/calc_odds.xlsx

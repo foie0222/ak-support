@@ -11,13 +11,13 @@ def main():
     yumachan = get_yumachan()
     odds_manager = get_odds_manager(yumachan.opdt, yumachan.race_course, yumachan.rno)
 
-    wb = openpyxl.load_workbook('xls/calc.xlsm', keep_vba=True)
+    wb = openpyxl.load_workbook('xls/calc.xlsx')
     ws = wb['sheet']
 
     only_yuma_post(yumachan, ws)
     only_odds_post(odds_manager, ws)
 
-    wb.save('xls/calc_after.xlsm')
+    wb.save('xls/calc_after.xlsx')
     wb.close()
 
     elapsed_time = time.time() - start
@@ -82,12 +82,27 @@ if __name__ == '__main__':
 
         odds_manager = get_odds_manager(sys.argv[2], get_race_course_from_cd(sys.argv[3]), sys.argv[4])
 
-        wb = openpyxl.load_workbook('xls/calc.xlsm', keep_vba=True)
+        wb = openpyxl.load_workbook('xls/calc.xlsx')
         ws = wb['sheet']
 
         only_odds_post(odds_manager, ws)
 
-        wb.save('xls/calc_odds.xlsm')
+        wb.save('xls/calc_odds.xlsx')
+        wb.close()
+
+        elapsed_time = time.time() - start
+        print(f'完了！処理時間 : {round(elapsed_time, 2)}[秒]')
+    elif sys.argv[1] == 'yuma_only':
+        start = time.time()
+
+        yumachan = get_yumachan()
+
+        wb = openpyxl.load_workbook('xls/calc_odds.xlsx')
+        ws = wb['sheet']
+
+        only_yuma_post(yumachan, ws)
+
+        wb.save('xls/calc_after.xlsx')
         wb.close()
 
         elapsed_time = time.time() - start
