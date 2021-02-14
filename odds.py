@@ -201,7 +201,7 @@ def get_umatan_odds_list(netkeiba_race_id, driver):
     html = driver.page_source.encode('utf-8')
     soup = BeautifulSoup(html, 'html.parser')
 
-    time.sleep(3)
+    time.sleep(5)
 
     jiku_blocks = soup.find_all('table', class_='Odds_Table')
 
