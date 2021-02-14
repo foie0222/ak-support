@@ -30,7 +30,7 @@ def get_odds_manager(opdt, race_course, rno):
     print('オッズ取得中...')
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
-    options.add_argument('--headless')
+    # options.add_argument('--headless')
 
     driver = get_webdriver(options)
 
@@ -201,7 +201,7 @@ def get_umatan_odds_list(netkeiba_race_id, driver):
     html = driver.page_source.encode('utf-8')
     soup = BeautifulSoup(html, 'html.parser')
 
-    time.sleep(5)
+    time.sleep(3)
 
     jiku_blocks = soup.find_all('table', class_='Odds_Table')
 
@@ -210,7 +210,6 @@ def get_umatan_odds_list(netkeiba_race_id, driver):
         himo_numbers = jiku_block.find_all('td', class_='Waku_Normal')
         umatan_odds = jiku_block.find_all('span', class_='transition-color')
         for i in range(len(himo_numbers)):
-            print(url)
             himo_umano = himo_numbers[i].string.zfill(2)
             odds = float(umatan_odds[i].string)
             umatan_odds_list.append(Odds(f'{jiku_umano}-{himo_umano}', odds))
