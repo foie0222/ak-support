@@ -210,6 +210,7 @@ def get_umatan_odds_list(netkeiba_race_id, driver):
         himo_numbers = jiku_block.find_all('td', class_='Waku_Normal')
         umatan_odds = jiku_block.find_all('span', class_='transition-color')
         for i in range(len(himo_numbers)):
+            print(url)
             himo_umano = himo_numbers[i].string.zfill(2)
             odds = float(umatan_odds[i].string)
             umatan_odds_list.append(Odds(f'{jiku_umano}-{himo_umano}', odds))
