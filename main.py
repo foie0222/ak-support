@@ -3,20 +3,41 @@ import time
 import openpyxl
 from odds import get_odds_manager
 from yumachan import get_yumachan, get_race_course_from_cd
+from ticket import make_ticket, make_csv
+from util import get_time_stamp
+from ipatgo import vote
+
+TARGET_REFUND = 30000
+TIME_STAMP = get_time_stamp()
 
 
 def main():
     start = time.time()
 
+    # ゆまちゃんデータ取得
     yumachan = get_yumachan()
+
+    # オッズを取得
     odds_manager = get_odds_manager(yumachan.opdt, yumachan.race_course, yumachan.rno)
 
+    # 購入馬券リストを作る
+    ticket_list = make_ticket(yumachan, odds_manager, TARGET_REFUND)
+
+    # 購入馬券リストをコンソール出力
+    for ticket in ticket_list:
+        print(ticket.to_string())
+
+    # 購入馬券リストをcsvに書き出す
+    make_csv(ticket_list, TIME_STAMP)
+
+    # ipatgoで投票
+    vote(TIME_STAMP)
+
+    # excelファイル作成
     wb = openpyxl.load_workbook('xls/calc.xlsx')
     ws = wb['sheet']
-
     only_yuma_post(yumachan, ws)
     only_odds_post(odds_manager, ws)
-
     wb.save('xls/calc_after.xlsx')
     wb.close()
 
