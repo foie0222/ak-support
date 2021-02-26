@@ -7,11 +7,10 @@ from ticket import make_ticket, make_csv
 from util import get_time_stamp
 from ipatgo import vote
 
-TARGET_REFUND = 30000
 TIME_STAMP = get_time_stamp()
 
 
-def main():
+def main(target_refund):
     start = time.time()
 
     # ゆまちゃんデータ取得
@@ -21,7 +20,7 @@ def main():
     odds_manager = get_odds_manager(yumachan.opdt, yumachan.race_course, yumachan.rno)
 
     # 購入馬券リストを作る
-    ticket_list = make_ticket(yumachan, odds_manager, TARGET_REFUND)
+    ticket_list = make_ticket(yumachan, odds_manager, target_refund)
 
     # 購入馬券リストをコンソール出力
     for ticket in ticket_list:
@@ -32,14 +31,6 @@ def main():
 
     # ipatgoで投票
     vote(TIME_STAMP)
-
-    # # excelファイル作成
-    # wb = openpyxl.load_workbook('xls/calc.xlsx')
-    # ws = wb['sheet']
-    # only_yuma_post(yumachan, ws)
-    # only_odds_post(odds_manager, ws)
-    # wb.save('xls/calc_after.xlsx')
-    # wb.close()
 
     elapsed_time = time.time() - start
     print(f'完了！処理時間 : {round(elapsed_time, 2)}[秒]')
@@ -129,5 +120,5 @@ if __name__ == '__main__':
         elapsed_time = time.time() - start
         print(f'完了！処理時間 : {round(elapsed_time, 2)}[秒]')
     elif sys.argv[1] == 'main':
-        main()
+        main(int(sys.argv[2]))
 
