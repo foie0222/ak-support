@@ -33,13 +33,13 @@ def main():
     # ipatgoで投票
     vote(TIME_STAMP)
 
-    # excelファイル作成
-    wb = openpyxl.load_workbook('xls/calc.xlsx')
-    ws = wb['sheet']
-    only_yuma_post(yumachan, ws)
-    only_odds_post(odds_manager, ws)
-    wb.save('xls/calc_after.xlsx')
-    wb.close()
+    # # excelファイル作成
+    # wb = openpyxl.load_workbook('xls/calc.xlsx')
+    # ws = wb['sheet']
+    # only_yuma_post(yumachan, ws)
+    # only_odds_post(odds_manager, ws)
+    # wb.save('xls/calc_after.xlsx')
+    # wb.close()
 
     elapsed_time = time.time() - start
     print(f'完了！処理時間 : {round(elapsed_time, 2)}[秒]')

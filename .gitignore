@@ -133,4 +133,4 @@ dmypy.json
 chromedriver
 /driver
 /xls/calc_odds.xlsx
-tickets
+tickets/*
