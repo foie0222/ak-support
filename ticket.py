@@ -46,13 +46,13 @@ def make_tan_ticket(yumachan, tan_odds_list, target_refund):
         expected_value = probability * odds
         if expected_value >= 2 and expected_value < 2.5:
             bet = calc_bet(odds, target_refund)
-        if expected_value >= 2.5 and expected_value < 3:
+        elif expected_value >= 2.5 and expected_value < 3:
             bet = calc_bet(odds, target_refund * 1.3)
-        if expected_value >= 3 and expected_value < 4:
+        elif expected_value >= 3 and expected_value < 4:
             bet = calc_bet(odds, target_refund * 1.5)
-        if expected_value >= 4 and expected_value < 6:
+        elif expected_value >= 4 and expected_value < 6:
             bet = calc_bet(odds, target_refund * 1.8)
-        if expected_value >= 6:
+        elif expected_value >= 6:
             bet = calc_bet(odds, target_refund * 2)
         else:
             continue
@@ -83,13 +83,13 @@ def make_umaren_ticket(yumachan, umaren_odds_list, target_refund):
             expected_value = probability * odds
             if expected_value >= 2 and expected_value < 2.5:
                 bet = calc_bet(odds, target_refund)
-            if expected_value >= 2.5 and expected_value < 3:
+            elif expected_value >= 2.5 and expected_value < 3:
                 bet = calc_bet(odds, target_refund * 1.3)
-            if expected_value >= 3 and expected_value < 4:
+            elif expected_value >= 3 and expected_value < 4:
                 bet = calc_bet(odds, target_refund * 1.5)
-            if expected_value >= 4 and expected_value < 6:
+            elif expected_value >= 4 and expected_value < 6:
                 bet = calc_bet(odds, target_refund * 1.8)
-            if expected_value >= 6:
+            elif expected_value >= 6:
                 bet = calc_bet(odds, target_refund * 2)
             else:
                 continue
@@ -121,13 +121,13 @@ def make_umatan_ticket(yumachan, umatan_odds_list, target_refund):
             expected_value = probability * odds
             if expected_value >= 2 and expected_value < 2.5:
                 bet = calc_bet(odds, target_refund)
-            if expected_value >= 2.5 and expected_value < 3:
+            elif expected_value >= 2.5 and expected_value < 3:
                 bet = calc_bet(odds, target_refund * 1.3)
-            if expected_value >= 3 and expected_value < 4:
+            elif expected_value >= 3 and expected_value < 4:
                 bet = calc_bet(odds, target_refund * 1.5)
-            if expected_value >= 4 and expected_value < 6:
+            elif expected_value >= 4 and expected_value < 6:
                 bet = calc_bet(odds, target_refund * 1.8)
-            if expected_value >= 6:
+            elif expected_value >= 6:
                 bet = calc_bet(odds, target_refund * 2)
             else:
                 continue
