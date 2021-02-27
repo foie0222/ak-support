@@ -34,6 +34,7 @@ def make_ticket(yumachan, odds_manager, target_refund):
     ticket_list.extend(make_tan_ticket(yumachan, odds_manager.tan_odds_list, target_refund))
     ticket_list.extend(make_umaren_ticket(yumachan, odds_manager.umaren_odds_list, target_refund))
     ticket_list.extend(make_umatan_ticket(yumachan, odds_manager.umatan_odds_list, target_refund))
+    ticket_list.extend(make_trio_ticket(yumachan, odds_manager.trio_odds_list, target_refund))
     return ticket_list
 
 
@@ -146,6 +147,44 @@ def make_umatan_ticket(yumachan, umatan_odds_list, target_refund):
     return sorted_umatanticket_list
 
 
+# 3連複購入
+def make_trio_ticket(yumachan, trio_odds_list, target_refund):
+    trio_ticket_list = []
+    for i, horse1 in enumerate(yumachan.horse_list):
+        for k, horse2 in enumerate(yumachan.horse_list[i + 1:]):
+            for horse3 in yumachan.horse_list[i + k + 2:]:
+                trio_num = make_trio_num(horse1.umano, horse2.umano, horse3.umano)
+
+                odds = [trio_odds for trio_odds in trio_odds_list if trio_odds.umano == trio_num][0].odds
+                probability = get_trio_probability(horse1.probability, horse2.probability, horse3.probability)
+                expected_value = probability * odds
+                if expected_value >= 2 and expected_value < 2.5:
+                    bet = calc_bet(odds, target_refund)
+                elif expected_value >= 2.5 and expected_value < 3:
+                    bet = calc_bet(odds, target_refund * 1.3)
+                elif expected_value >= 3 and expected_value < 4:
+                    bet = calc_bet(odds, target_refund * 1.5)
+                elif expected_value >= 4 and expected_value < 6:
+                    bet = calc_bet(odds, target_refund * 1.8)
+                elif expected_value >= 6:
+                    bet = calc_bet(odds, target_refund * 2)
+                else:
+                    continue
+
+                ticket = Ticket(
+                    yumachan,
+                    'SANRENPUKU',
+                    trio_num,
+                    bet,
+                    expected_value,
+                    probability,
+                    odds)
+                trio_ticket_list.append(ticket)
+
+    sorted_trio_ticket_list = sorted(trio_ticket_list, key=lambda t: t.number)
+    return sorted_trio_ticket_list
+
+
 # 単勝の期待値を計算する
 def get_tan_probability(probability):
     return probability / 100
@@ -165,6 +204,17 @@ def get_umaren_probability(probability1, probability2):
     return total_probability
 
 
+# 3連複の期待値を計算する
+def get_trio_probability(probability1, probability2, probability3):
+    trio_probability = probability1 * probability2 / (100 - probability1) * probability3 / ((100 - probability1 - probability2)) \
+        +probability1 * probability3 / (100 - probability1) * probability2 / ((100 - probability1 - probability3)) \
+        +probability2 * probability1 / (100 - probability2) * probability3 / ((100 - probability2 - probability1)) \
+        +probability2 * probability3 / (100 - probability2) * probability1 / ((100 - probability2 - probability3)) \
+        +probability3 * probability1 / (100 - probability3) * probability2 / ((100 - probability3 - probability1)) \
+        +probability3 * probability2 / (100 - probability3) * probability1 / ((100 - probability3 - probability2))
+    return trio_probability / 100
+
+
 # 指定した払い戻し額に届くように購入金額を計算する
 def calc_bet(odds, target_refund):
     bet = 100
@@ -179,6 +229,12 @@ def make_pair_num(umano1, umano2):
     if uma1 < uma2:
         return umano1 + '-' + umano2
     return umano2 + '-' + umano1
+
+
+def make_trio_num(umano1, umano2, umano3):
+    x = [int(umano1), int(umano2), int(umano3)]
+    sorted_x = sorted(x)
+    return str(sorted_x[0]).zfill(2) + '-' + str(sorted_x[1]).zfill(2) + '-' + str(sorted_x[2]).zfill(2)
 
 
 # 投票用のcsv出力
