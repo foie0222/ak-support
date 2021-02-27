@@ -44,8 +44,16 @@ def make_tan_ticket(yumachan, tan_odds_list, target_refund):
         odds = [tan_odds for tan_odds in tan_odds_list if tan_odds.umano == horse.umano][0].odds
         probability = get_tan_probability(horse.probability)
         expected_value = probability * odds
-        if expected_value >= 2:
+        if expected_value >= 2 and expected_value < 2.5:
             bet = calc_bet(odds, target_refund)
+        if expected_value >= 2.5 and expected_value < 3:
+            bet = calc_bet(odds, target_refund * 1.3)
+        if expected_value >= 3 and expected_value < 4:
+            bet = calc_bet(odds, target_refund * 1.5)
+        if expected_value >= 4 and expected_value < 6:
+            bet = calc_bet(odds, target_refund * 1.8)
+        if expected_value >= 6:
+            bet = calc_bet(odds, target_refund * 2)
         else:
             continue
 
@@ -73,8 +81,16 @@ def make_umaren_ticket(yumachan, umaren_odds_list, target_refund):
             odds = [umaren_odds for umaren_odds in umaren_odds_list if umaren_odds.umano == pair_num][0].odds
             probability = get_umaren_probability(horse1.probability, horse2.probability)
             expected_value = probability * odds
-            if expected_value >= 2:
+            if expected_value >= 2 and expected_value < 2.5:
                 bet = calc_bet(odds, target_refund)
+            if expected_value >= 2.5 and expected_value < 3:
+                bet = calc_bet(odds, target_refund * 1.3)
+            if expected_value >= 3 and expected_value < 4:
+                bet = calc_bet(odds, target_refund * 1.5)
+            if expected_value >= 4 and expected_value < 6:
+                bet = calc_bet(odds, target_refund * 1.8)
+            if expected_value >= 6:
+                bet = calc_bet(odds, target_refund * 2)
             else:
                 continue
 
@@ -103,8 +119,16 @@ def make_umatan_ticket(yumachan, umatan_odds_list, target_refund):
             odds = [umatan_odds for umatan_odds in umatan_odds_list if umatan_odds.umano == pair_num][0].odds
             probability = get_umatan_probability(horse1.probability, horse2.probability)
             expected_value = probability * odds
-            if expected_value >= 2:
+            if expected_value >= 2 and expected_value < 2.5:
                 bet = calc_bet(odds, target_refund)
+            if expected_value >= 2.5 and expected_value < 3:
+                bet = calc_bet(odds, target_refund * 1.3)
+            if expected_value >= 3 and expected_value < 4:
+                bet = calc_bet(odds, target_refund * 1.5)
+            if expected_value >= 4 and expected_value < 6:
+                bet = calc_bet(odds, target_refund * 1.8)
+            if expected_value >= 6:
+                bet = calc_bet(odds, target_refund * 2)
             else:
                 continue
 
