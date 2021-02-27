@@ -20,7 +20,7 @@ class Ticket:
         return '{},{},{},{},{},{},{},{}'.format(
             self.yumachan.opdt,
             self.yumachan.race_course.roman,
-            self.yumachan.rno,
+            int(self.yumachan.rno),
             self.denomination,
             self.method,
             self.multi,
