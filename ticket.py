@@ -14,7 +14,7 @@ class Ticket:
         self.odds = odds
 
     def to_string(self):
-        return f'Ticket=[opdt={self.yumachan.opdt}, course={self.yumachan.race_course.name}, denomination={self.denomination}, number={self.number}, bet_price={self.bet_price}, expected_value={round(self.expected_value, 2)}, probability={round(self.probability * 100, 2)}%, odds={self.odds}]'
+        return f'Ticket=[opdt={self.yumachan.opdt}, course={self.yumachan.race_course.name}, rno={self.yumachan.rno}, denomination={self.denomination}, number={self.number}, bet_price={self.bet_price}, expected_value={round(self.expected_value, 2)}, probability={round(self.probability * 100, 2)}%, odds={self.odds}]'
 
     def to_csv(self):
         return '{},{},{},{},{},{},{},{}'.format(
