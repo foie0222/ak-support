@@ -79,7 +79,10 @@ def make_umaren_ticket(yumachan, umaren_odds_list, target_refund):
         for horse2 in yumachan.horse_list[i + 1:]:
             pair_num = make_pair_num(horse1.umano, horse2.umano)
 
-            odds = [umaren_odds for umaren_odds in umaren_odds_list if umaren_odds.umano == pair_num][0].odds
+            odds_list = [umaren_odds for umaren_odds in umaren_odds_list if umaren_odds.umano == pair_num]
+            if not odds_list:
+                continue
+            odds = odds_list[0].odds
             probability = get_umaren_probability(horse1.probability, horse2.probability)
             expected_value = probability * odds
             if 2 <= expected_value < 2.5:
@@ -117,7 +120,10 @@ def make_umatan_ticket(yumachan, umatan_odds_list, target_refund):
             if horse1.umano == horse2.umano:
                 continue
             pair_num = horse1.umano + '-' + horse2.umano
-            odds = [umatan_odds for umatan_odds in umatan_odds_list if umatan_odds.umano == pair_num][0].odds
+            odds_list = [umatan_odds for umatan_odds in umatan_odds_list if umatan_odds.umano == pair_num]
+            if not odds_list:
+                continue
+            odds = odds_list[0].odds
             probability = get_umatan_probability(horse1.probability, horse2.probability)
             expected_value = probability * odds
             if 2 <= expected_value < 2.5:
@@ -155,7 +161,10 @@ def make_trio_ticket(yumachan, trio_odds_list, target_refund):
             for horse3 in yumachan.horse_list[i + k + 2:]:
                 trio_num = make_trio_num(horse1.umano, horse2.umano, horse3.umano)
 
-                odds = [trio_odds for trio_odds in trio_odds_list if trio_odds.umano == trio_num][0].odds
+                odds_list = [trio_odds for trio_odds in trio_odds_list if trio_odds.umano == trio_num]
+                if not odds_list:
+                    continue
+                odds = odds_list[0].odds
                 probability = get_trio_probability(horse1.probability, horse2.probability, horse3.probability)
                 expected_value = probability * odds
                 if 2 <= expected_value < 2.5:

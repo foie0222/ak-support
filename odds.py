@@ -160,6 +160,8 @@ def get_umaren_odds_list(netkeiba_race_id, driver):
         himo_odds = jiku_block.find_all('span', class_='transition-color')
         for i in range(len(himo_numbers)):
             himo_umano = himo_numbers[i].string.zfill(2)
+            if (len(himo_odds)-1) < i:
+                continue
             odds = float(himo_odds[i].string)
             umaren_odds_list.append(Odds(f'{jiku_umano}-{himo_umano}', odds))
 
@@ -182,10 +184,12 @@ def get_wide_min_odds_list(netkeiba_race_id, driver):
     for index, jiku_block in enumerate(jiku_blocks):
         jiku_umano = str(index + 1).zfill(2)
         himo_numbers = jiku_block.find_all('td', class_='Waku_Normal')
-        umaren_odds = jiku_block.find_all('span', class_='transition-color')
+        wide_odds = jiku_block.find_all('span', class_='transition-color')
         for i in range(len(himo_numbers)):
             himo_umano = himo_numbers[i].string.zfill(2)
-            odds = float(umaren_odds[i].string)
+            if (len(wide_odds)-1) < i:
+                continue
+            odds = float(wide_odds[i].string)
             wide_min_odds_list.append(Odds(f'{jiku_umano}-{himo_umano}', odds))
 
     return wide_min_odds_list
@@ -211,6 +215,8 @@ def get_umatan_odds_list(netkeiba_race_id, driver):
         umatan_odds = jiku_block.find_all('span', class_='transition-color')
         for i in range(len(himo_numbers)):
             himo_umano = himo_numbers[i].string.zfill(2)
+            if (len(umatan_odds)-1) < i:
+                continue
             odds = float(umatan_odds[i].string)
             umatan_odds_list.append(Odds(f'{jiku_umano}-{himo_umano}', odds))
 
@@ -238,6 +244,8 @@ def get_trio_odds_list(netkeiba_race_id, num_of_horse, driver):
             trio_odds = jiku2_block.find_all('span', class_='transition-color')
             for i in range(len(jiku3_umanos)):
                 jiku3_umano = jiku3_umanos[i].string.zfill(2)
+                if (len(trio_odds) - 1) < i:
+                    continue
                 odds = float(trio_odds[i].string)
                 trio_odds_list.append(Odds(f'{jiku1_umano}-{jiku2_umano}-{jiku3_umano}', odds))
 
