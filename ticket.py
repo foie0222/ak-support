@@ -45,15 +45,15 @@ def make_tan_ticket(yumachan, tan_odds_list, target_refund):
         odds = [tan_odds for tan_odds in tan_odds_list if tan_odds.umano == horse.umano][0].odds
         probability = get_tan_probability(horse.probability)
         expected_value = probability * odds
-        if expected_value >= 2 and expected_value < 2.5:
+        if 2 <= expected_value < 2.5:
             bet = calc_bet(odds, target_refund)
-        elif expected_value >= 2.5 and expected_value < 3:
+        elif 2.5 <= expected_value < 3:
             bet = calc_bet(odds, target_refund * 1.3)
-        elif expected_value >= 3 and expected_value < 4:
+        elif 3 <= expected_value < 4:
             bet = calc_bet(odds, target_refund * 1.5)
-        elif expected_value >= 4 and expected_value < 6:
+        elif 4 <= expected_value < 6:
             bet = calc_bet(odds, target_refund * 1.8)
-        elif expected_value >= 6:
+        elif 6 <= expected_value:
             bet = calc_bet(odds, target_refund * 2)
         else:
             continue
@@ -82,15 +82,15 @@ def make_umaren_ticket(yumachan, umaren_odds_list, target_refund):
             odds = [umaren_odds for umaren_odds in umaren_odds_list if umaren_odds.umano == pair_num][0].odds
             probability = get_umaren_probability(horse1.probability, horse2.probability)
             expected_value = probability * odds
-            if expected_value >= 2 and expected_value < 2.5:
+            if 2 <= expected_value < 2.5:
                 bet = calc_bet(odds, target_refund)
-            elif expected_value >= 2.5 and expected_value < 3:
+            elif 2.5 <= expected_value < 3:
                 bet = calc_bet(odds, target_refund * 1.3)
-            elif expected_value >= 3 and expected_value < 4:
+            elif 3 <= expected_value < 4:
                 bet = calc_bet(odds, target_refund * 1.5)
-            elif expected_value >= 4 and expected_value < 6:
+            elif 4 <= expected_value < 6:
                 bet = calc_bet(odds, target_refund * 1.8)
-            elif expected_value >= 6:
+            elif 6 <= expected_value:
                 bet = calc_bet(odds, target_refund * 2)
             else:
                 continue
@@ -120,15 +120,15 @@ def make_umatan_ticket(yumachan, umatan_odds_list, target_refund):
             odds = [umatan_odds for umatan_odds in umatan_odds_list if umatan_odds.umano == pair_num][0].odds
             probability = get_umatan_probability(horse1.probability, horse2.probability)
             expected_value = probability * odds
-            if expected_value >= 2 and expected_value < 2.5:
+            if 2 <= expected_value < 2.5:
                 bet = calc_bet(odds, target_refund)
-            elif expected_value >= 2.5 and expected_value < 3:
+            elif 2.5 <= expected_value < 3:
                 bet = calc_bet(odds, target_refund * 1.3)
-            elif expected_value >= 3 and expected_value < 4:
+            elif 3 <= expected_value < 4:
                 bet = calc_bet(odds, target_refund * 1.5)
-            elif expected_value >= 4 and expected_value < 6:
+            elif 4 <= expected_value < 6:
                 bet = calc_bet(odds, target_refund * 1.8)
-            elif expected_value >= 6:
+            elif 6 <= expected_value:
                 bet = calc_bet(odds, target_refund * 2)
             else:
                 continue
@@ -143,8 +143,8 @@ def make_umatan_ticket(yumachan, umatan_odds_list, target_refund):
                 odds)
             umatan_ticket_list.append(ticket)
 
-    sorted_umatanticket_list = sorted(umatan_ticket_list, key=lambda t: t.number)
-    return sorted_umatanticket_list
+    sorted_umatan_ticket_list = sorted(umatan_ticket_list, key=lambda t: t.number)
+    return sorted_umatan_ticket_list
 
 
 # 3連複購入
@@ -158,15 +158,15 @@ def make_trio_ticket(yumachan, trio_odds_list, target_refund):
                 odds = [trio_odds for trio_odds in trio_odds_list if trio_odds.umano == trio_num][0].odds
                 probability = get_trio_probability(horse1.probability, horse2.probability, horse3.probability)
                 expected_value = probability * odds
-                if expected_value >= 2 and expected_value < 2.5:
+                if 2 <= expected_value < 2.5:
                     bet = calc_bet(odds, target_refund)
-                elif expected_value >= 2.5 and expected_value < 3:
+                elif 2.5 <= expected_value < 3:
                     bet = calc_bet(odds, target_refund * 1.3)
-                elif expected_value >= 3 and expected_value < 4:
+                elif 3 <= expected_value < 4:
                     bet = calc_bet(odds, target_refund * 1.5)
-                elif expected_value >= 4 and expected_value < 6:
+                elif 4 <= expected_value < 6:
                     bet = calc_bet(odds, target_refund * 1.8)
-                elif expected_value >= 6:
+                elif 6 <= expected_value:
                     bet = calc_bet(odds, target_refund * 2)
                 else:
                     continue
