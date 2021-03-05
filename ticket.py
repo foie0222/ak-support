@@ -33,6 +33,7 @@ def make_ticket(yumachan, odds_manager, target_refund):
     ticket_list = []
     ticket_list.extend(make_tan_ticket(yumachan, odds_manager.tan_odds_list, target_refund))
     ticket_list.extend(make_umaren_ticket(yumachan, odds_manager.umaren_odds_list, target_refund))
+    ticket_list.extend(make_wide_ticket(yumachan, odds_manager.wide_min_odds_list, target_refund))
     ticket_list.extend(make_umatan_ticket(yumachan, odds_manager.umatan_odds_list, target_refund))
     ticket_list.extend(make_trio_ticket(yumachan, odds_manager.trio_odds_list, target_refund))
     return ticket_list
@@ -109,6 +110,46 @@ def make_umaren_ticket(yumachan, umaren_odds_list, target_refund):
             umaren_ticket_list.append(ticket)
 
     sorted_umaren_ticket_list = sorted(umaren_ticket_list, key=lambda t: t.number)
+    return sorted_umaren_ticket_list
+
+
+# ワイド購入
+def make_wide_ticket(yumachan, wide_min_odds_list, target_refund):
+    wide_ticket_list = []
+    for i, horse1 in enumerate(yumachan.horse_list):
+        for horse2 in yumachan.horse_list[i + 1:]:
+            pair_num = make_pair_num(horse1.umano, horse2.umano)
+
+            odds_list = [wide_min_odds for wide_min_odds in wide_min_odds_list if wide_min_odds.umano == pair_num]
+            if not odds_list:
+                continue
+            odds = odds_list[0].odds
+            probability = get_wide_probability(horse1, horse2, yumachan.horse_list)
+            expected_value = probability * odds
+            if 2 <= expected_value < 2.5:
+                bet = calc_bet(odds, target_refund)
+            elif 2.5 <= expected_value < 3:
+                bet = calc_bet(odds, target_refund * 1.3)
+            elif 3 <= expected_value < 4:
+                bet = calc_bet(odds, target_refund * 1.5)
+            elif 4 <= expected_value < 6:
+                bet = calc_bet(odds, target_refund * 1.8)
+            elif 6 <= expected_value:
+                bet = calc_bet(odds, target_refund * 2)
+            else:
+                continue
+
+            ticket = Ticket(
+                yumachan,
+                'WIDE',
+                pair_num,
+                bet,
+                expected_value,
+                probability,
+                odds)
+            wide_ticket_list.append(ticket)
+
+    sorted_umaren_ticket_list = sorted(wide_ticket_list, key=lambda t: t.number)
     return sorted_umaren_ticket_list
 
 
@@ -194,18 +235,18 @@ def make_trio_ticket(yumachan, trio_odds_list, target_refund):
     return sorted_trio_ticket_list
 
 
-# 単勝の期待値を計算する
+# 単勝の確率を計算する
 def get_tan_probability(probability):
     return probability / 100
 
 
-# 馬単の期待値を計算する
+# 馬単の確率を計算する
 def get_umatan_probability(probability1, probability2):
     _1_2_probability = probability1 * (probability2 / (100 - probability1))
     return _1_2_probability / 100
 
 
-# 馬連の期待値を計算する
+# 馬連の確率を計算する
 def get_umaren_probability(probability1, probability2):
     _1_2_probability = get_umatan_probability(probability1, probability2)
     _2_1_probability = get_umatan_probability(probability2, probability1)
@@ -213,7 +254,17 @@ def get_umaren_probability(probability1, probability2):
     return total_probability
 
 
-# 3連複の期待値を計算する
+# ワイドの確率を計算する
+def get_wide_probability(horse1, horse2, horse_list):
+    total_probability = 0
+    for horse in horse_list:
+        if horse.umano in [horse1.umano, horse2.umano]:
+            continue
+        total_probability += get_trio_probability(horse1.probability, horse2.probability, horse.probability)
+    return total_probability
+
+
+# 3連複の確率を計算する
 def get_trio_probability(probability1, probability2, probability3):
     trio_probability = probability1 * probability2 / (100 - probability1) * probability3 / ((100 - probability1 - probability2)) \
         +probability1 * probability3 / (100 - probability1) * probability2 / ((100 - probability1 - probability3)) \
