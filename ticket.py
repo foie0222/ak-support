@@ -42,7 +42,7 @@ def make_ticket(yumachan, odds_manager, target_refund):
 def make_trifecta_ticket(yumachan, odds_manager, target_refund):
     print('3連単の買い目を作成中...')
     ticket_list = []
-    ticket_list.extend(make_trifecta_ticket(yumachan, odds_manager.trifecta_odds_list, target_refund))
+    ticket_list.extend(__make_trifecta_ticket(yumachan, odds_manager.trifecta_odds_list, target_refund))
     return ticket_list
 
 
@@ -243,7 +243,7 @@ def make_trio_ticket(yumachan, trio_odds_list, target_refund):
 
 
 # 3連単購入
-def make_trifecta_ticket(yumachan, trifecta_odds_list, target_refund):
+def __make_trifecta_ticket(yumachan, trifecta_odds_list, target_refund):
     trifecta_ticket_list = []
     for i, horse1 in enumerate(yumachan.horse_list):
         for k, horse2 in enumerate(yumachan.horse_list):
