@@ -7,13 +7,14 @@ from selenium import webdriver
 
 
 class OddsManager:
-    def __init__(self, tan_odds_list, fuku_min_odds_list, umaren_odds_list, wide_min_odds_list, umatan_odds_list, trio_odds_list):
+    def __init__(self, tan_odds_list, fuku_min_odds_list, umaren_odds_list, wide_min_odds_list, umatan_odds_list, trio_odds_list, trifecta_odds_list):
         self.tan_odds_list = tan_odds_list
         self.fuku_min_odds_list = fuku_min_odds_list
         self.umaren_odds_list = umaren_odds_list
         self.wide_min_odds_list = wide_min_odds_list
         self.umatan_odds_list = umatan_odds_list
         self.trio_odds_list = trio_odds_list
+        self.trifecta_odds_list = trifecta_odds_list
 
 
 class Odds:
@@ -47,10 +48,11 @@ def get_odds_manager(opdt, race_course, rno):
     wide_min_odds_list = get_wide_min_odds_list(netkeiba_race_id, driver)
     umatan_odds_list = get_umatan_odds_list(netkeiba_race_id, driver)
     trio_odds_list = get_trio_odds_list(netkeiba_race_id, len(tan_odds_list), driver)
+    trifecta_odds_list = get_trifecta_odds_list(netkeiba_race_id, len(tan_odds_list), driver)
 
     driver.quit()
 
-    return OddsManager(tan_odds_list, fuku_min_odds_list, umaren_odds_list, wide_min_odds_list, umatan_odds_list, trio_odds_list)
+    return OddsManager(tan_odds_list, fuku_min_odds_list, umaren_odds_list, wide_min_odds_list, umatan_odds_list, trio_odds_list, trifecta_odds_list)
 
 
 # netkeibaのrace_idを取得
@@ -231,7 +233,7 @@ def get_trio_odds_list(netkeiba_race_id, num_of_horse, driver):
         jiku1_umano = str(jiku_no).zfill(2)
         url = f'https://race.netkeiba.com/odds/index.html?type=b7&race_id={netkeiba_race_id}&housiki=c0&rf=shutuba_submenu&jiku={jiku_no}'
         driver.get(url)
-        time.sleep(3)
+        time.sleep(2)
 
         html = driver.page_source.encode('utf-8')
         soup = BeautifulSoup(html, 'html.parser')
@@ -250,6 +252,35 @@ def get_trio_odds_list(netkeiba_race_id, num_of_horse, driver):
                 trio_odds_list.append(Odds(f'{jiku1_umano}-{jiku2_umano}-{jiku3_umano}', odds))
 
     return trio_odds_list
+
+
+# 3連単オッズを取得
+def get_trifecta_odds_list(netkeiba_race_id, num_of_horse, driver):
+    trifecta_odds_list = []
+
+    for jiku_no in range(1, num_of_horse + 1):
+        jiku1_umano = str(jiku_no).zfill(2)
+        url = f'https://race.netkeiba.com/odds/index.html?type=b8&race_id={netkeiba_race_id}&housiki=c0&rf=shutuba_submenu&jiku={jiku_no}'
+        driver.get(url)
+        time.sleep(2)
+
+        html = driver.page_source.encode('utf-8')
+        soup = BeautifulSoup(html, 'html.parser')
+
+        jiku2_blocks = soup.find_all('table', class_='Odds_Table')
+
+        for jiku2_block in jiku2_blocks:
+            jiku2_umano = jiku2_block.find('tr', class_='col_label').find('th').string.zfill(2)
+            jiku3_umanos = jiku2_block.find_all('td', class_='Waku_Normal')
+            trio_odds = jiku2_block.find_all('span', class_='transition-color')
+            for i in range(len(jiku3_umanos)):
+                jiku3_umano = jiku3_umanos[i].string.zfill(2)
+                if (len(trio_odds) - 1) < i:
+                    continue
+                odds = float(trio_odds[i].string)
+                trifecta_odds_list.append(Odds(f'{jiku1_umano}-{jiku2_umano}-{jiku3_umano}', odds))
+
+    return trifecta_odds_list
 
 
 def get_webdriver(options):

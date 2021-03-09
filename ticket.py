@@ -36,6 +36,7 @@ def make_ticket(yumachan, odds_manager, target_refund):
     ticket_list.extend(make_wide_ticket(yumachan, odds_manager.wide_min_odds_list, target_refund))
     ticket_list.extend(make_umatan_ticket(yumachan, odds_manager.umatan_odds_list, target_refund))
     ticket_list.extend(make_trio_ticket(yumachan, odds_manager.trio_odds_list, target_refund))
+    ticket_list.extend(make_trifecta_ticket(yumachan, odds_manager.trifecta_odds_list, target_refund))
     return ticket_list
 
 
@@ -235,6 +236,49 @@ def make_trio_ticket(yumachan, trio_odds_list, target_refund):
     return sorted_trio_ticket_list
 
 
+# 3連単購入
+def make_trifecta_ticket(yumachan, trifecta_odds_list, target_refund):
+    trifecta_ticket_list = []
+    for i, horse1 in enumerate(yumachan.horse_list):
+        for k, horse2 in enumerate(yumachan.horse_list):
+            for horse3 in yumachan.horse_list:
+                if horse1.umano == horse2.umano or horse1.umano == horse3.umano or horse2.umano == horse3.umano:
+                    continue
+                trifecta_num = horse1.umano + '-' + horse2.umano + '-' + horse3.umano
+
+                odds_list = [trifecta_odds for trifecta_odds in trifecta_odds_list if trifecta_odds.umano == trifecta_num]
+                if not odds_list:
+                    continue
+                odds = odds_list[0].odds
+                probability = get_trifecta_probability(horse1.probability, horse2.probability, horse3.probability)
+                expected_value = probability * odds
+                if 2 <= expected_value < 2.5:
+                    bet = calc_bet(odds, target_refund)
+                elif 2.5 <= expected_value < 3:
+                    bet = calc_bet(odds, target_refund * 1.3)
+                elif 3 <= expected_value < 4:
+                    bet = calc_bet(odds, target_refund * 1.5)
+                elif 4 <= expected_value < 6:
+                    bet = calc_bet(odds, target_refund * 1.8)
+                elif 6 <= expected_value:
+                    bet = calc_bet(odds, target_refund * 2)
+                else:
+                    continue
+
+                ticket = Ticket(
+                    yumachan,
+                    'SANRENTAN',
+                    trifecta_num,
+                    bet,
+                    expected_value,
+                    probability,
+                    odds)
+                trifecta_ticket_list.append(ticket)
+
+    sorted_trifecta_ticket_list = sorted(trifecta_ticket_list, key=lambda t: t.number)
+    return sorted_trifecta_ticket_list
+
+
 # 単勝の確率を計算する
 def get_tan_probability(probability):
     return probability / 100
@@ -272,6 +316,12 @@ def get_trio_probability(probability1, probability2, probability3):
         +probability2 * probability3 / (100 - probability2) * probability1 / ((100 - probability2 - probability3)) \
         +probability3 * probability1 / (100 - probability3) * probability2 / ((100 - probability3 - probability1)) \
         +probability3 * probability2 / (100 - probability3) * probability1 / ((100 - probability3 - probability2))
+    return trio_probability / 100
+
+
+# 3連単の確率を計算する
+def get_trifecta_probability(probability1, probability2, probability3):
+    trio_probability = probability1 * probability2 / (100 - probability1) * probability3 / (100 - probability1 - probability2)
     return trio_probability / 100
 
 
