@@ -29,13 +29,19 @@ class Ticket:
 
 
 def make_ticket(yumachan, odds_manager, target_refund):
-    print('買い目を作成中...')
+    print('3連単以外の買い目を作成中...')
     ticket_list = []
     ticket_list.extend(make_tan_ticket(yumachan, odds_manager.tan_odds_list, target_refund))
     ticket_list.extend(make_umaren_ticket(yumachan, odds_manager.umaren_odds_list, target_refund))
     ticket_list.extend(make_wide_ticket(yumachan, odds_manager.wide_min_odds_list, target_refund))
     ticket_list.extend(make_umatan_ticket(yumachan, odds_manager.umatan_odds_list, target_refund))
     ticket_list.extend(make_trio_ticket(yumachan, odds_manager.trio_odds_list, target_refund))
+    return ticket_list
+
+
+def make_trifecta_ticket(yumachan, odds_manager, target_refund):
+    print('3連単の買い目を作成中...')
+    ticket_list = []
     ticket_list.extend(make_trifecta_ticket(yumachan, odds_manager.trifecta_odds_list, target_refund))
     return ticket_list
 
@@ -348,9 +354,9 @@ def make_trio_num(umano1, umano2, umano3):
 
 
 # 投票用のcsv出力
-def make_csv(ticket_list, timestamp):
+def make_csv(ticket_list, timestamp, number):
     make_tickets_dir()
-    with open('./tickets/ticket_' + timestamp + '.csv', 'w') as f:
+    with open('./tickets/ticket_' + timestamp + f'_{number}.csv', 'w') as f:
         for ticket in ticket_list:
             f.write(ticket.to_csv() + '\n')
 

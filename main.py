@@ -3,7 +3,7 @@ import time
 import openpyxl
 from odds import get_odds_manager
 from yumachan import get_yumachan, get_race_course_from_cd
-from ticket import make_ticket, make_csv
+from ticket import make_ticket, make_csv, make_trifecta_ticket
 from util import get_time_stamp
 from ipatgo import vote
 
@@ -21,16 +21,19 @@ def main(target_refund):
 
     # 購入馬券リストを作る
     ticket_list = make_ticket(yumachan, odds_manager, target_refund)
+    ticket_trifecta_list = make_trifecta_ticket(yumachan, odds_manager, target_refund)
 
     # 購入馬券リストをコンソール出力
-    for ticket in ticket_list:
+    for ticket in ticket_list + ticket_trifecta_list:
         print(ticket.to_string())
 
     # 購入馬券リストをcsvに書き出す
-    make_csv(ticket_list, TIME_STAMP)
+    make_csv(ticket_list, TIME_STAMP, 0)
+    make_csv(ticket_trifecta_list, TIME_STAMP, 1)
 
     # ipatgoで投票
-    vote(TIME_STAMP)
+    vote(TIME_STAMP, 0)
+    vote(TIME_STAMP, 1)
 
     elapsed_time = time.time() - start
     print(f'完了！処理時間 : {round(elapsed_time, 2)}[秒]')
