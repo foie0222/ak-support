@@ -28,12 +28,12 @@ def main(target_refund):
         print(ticket.to_string())
 
     # 購入馬券リストをcsvに書き出す
-    make_csv(ticket_list, TIME_STAMP, 0)
-    make_csv(ticket_trifecta_list, TIME_STAMP, 1)
+    csv_list = make_csv(ticket_list, TIME_STAMP, 0)
+    trifecta_csv_list = make_csv(ticket_trifecta_list, TIME_STAMP, 1)
 
     # ipatgoで投票
-    vote(TIME_STAMP, 0)
-    vote(TIME_STAMP, 1)
+    vote(csv_list, 0)
+    vote(trifecta_csv_list, 1)
 
     elapsed_time = time.time() - start
     print(f'完了！処理時間 : {round(elapsed_time, 2)}[秒]')

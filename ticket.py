@@ -356,9 +356,21 @@ def make_trio_num(umano1, umano2, umano3):
 # 投票用のcsv出力
 def make_csv(ticket_list, timestamp, number):
     make_tickets_dir()
-    with open('./tickets/ticket_' + timestamp + f'_{number}.csv', 'w') as f:
-        for ticket in ticket_list:
+    csv_list =[]
+    counter = 0
+    csv_list.append('./tickets/ticket_' + timestamp + f'_{number}_{counter}.csv')
+    betsum = 0
+    for ticket in ticket_list:
+        betsum += ticket.bet_price
+        if betsum > 999900:
+            counter += 1
+            csv_list.append('./tickets/ticket_' + timestamp + f'_{number}_{counter}.csv')
+            betsum = ticket.bet_price
+        with open('./tickets/ticket_' + timestamp + f'_{number}_{counter}.csv', 'a') as f:
             f.write(ticket.to_csv() + '\n')
+    return csv_list
+
+
 
 
 # ticketsフォルダがなかったら作成する
