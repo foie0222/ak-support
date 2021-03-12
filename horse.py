@@ -43,7 +43,7 @@ def get_horse_list_from_png_by_google(image_url):
 def is_invalid(line):
     if len(line) < 6:  # 6文字未満の読み込み行は無効に
         return True
-
+    index = 0
     if ('(' in line):
         index = line.index('(')
     if ('【' in line):
