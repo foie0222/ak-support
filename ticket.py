@@ -53,7 +53,7 @@ def make_tan_ticket(yumachan, tan_odds_list, target_refund):
         odds = [tan_odds for tan_odds in tan_odds_list if tan_odds.umano == horse.umano][0].odds
         probability = get_tan_probability(horse.probability)
         expected_value = probability * odds
-        if 2 <= expected_value < 2.5:
+        if 1.95 <= expected_value < 2.5:
             bet = calc_bet(odds, target_refund)
         elif 2.5 <= expected_value < 3:
             bet = calc_bet(odds, target_refund * 1.3)
@@ -93,7 +93,7 @@ def make_umaren_ticket(yumachan, umaren_odds_list, target_refund):
             odds = odds_list[0].odds
             probability = get_umaren_probability(horse1.probability, horse2.probability)
             expected_value = probability * odds
-            if 2 <= expected_value < 2.5:
+            if 1.95 <= expected_value < 2.5:
                 bet = calc_bet(odds, target_refund)
             elif 2.5 <= expected_value < 3:
                 bet = calc_bet(odds, target_refund * 1.3)
@@ -133,7 +133,7 @@ def make_wide_ticket(yumachan, wide_min_odds_list, target_refund):
             odds = odds_list[0].odds
             probability = get_wide_probability(horse1, horse2, yumachan.horse_list)
             expected_value = probability * odds
-            if 2 <= expected_value < 2.5:
+            if 1.95 <= expected_value < 2.5:
                 bet = calc_bet(odds, target_refund)
             elif 2.5 <= expected_value < 3:
                 bet = calc_bet(odds, target_refund * 1.3)
@@ -174,7 +174,7 @@ def make_umatan_ticket(yumachan, umatan_odds_list, target_refund):
             odds = odds_list[0].odds
             probability = get_umatan_probability(horse1.probability, horse2.probability)
             expected_value = probability * odds
-            if 2 <= expected_value < 2.5:
+            if 1.95 <= expected_value < 2.5:
                 bet = calc_bet(odds, target_refund)
             elif 2.5 <= expected_value < 3:
                 bet = calc_bet(odds, target_refund * 1.3)
@@ -215,7 +215,7 @@ def make_trio_ticket(yumachan, trio_odds_list, target_refund):
                 odds = odds_list[0].odds
                 probability = get_trio_probability(horse1.probability, horse2.probability, horse3.probability)
                 expected_value = probability * odds
-                if 2 <= expected_value < 2.5:
+                if 1.95 <= expected_value < 2.5:
                     bet = calc_bet(odds, target_refund)
                 elif 2.5 <= expected_value < 3:
                     bet = calc_bet(odds, target_refund * 1.3)
@@ -258,7 +258,7 @@ def __make_trifecta_ticket(yumachan, trifecta_odds_list, target_refund):
                 odds = odds_list[0].odds
                 probability = get_trifecta_probability(horse1.probability, horse2.probability, horse3.probability)
                 expected_value = probability * odds
-                if 2 <= expected_value < 2.5:
+                if 1.95 <= expected_value < 2.5:
                     bet = calc_bet(odds, target_refund)
                 elif 2.5 <= expected_value < 3:
                     bet = calc_bet(odds, target_refund * 1.3)
