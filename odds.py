@@ -7,7 +7,8 @@ from selenium import webdriver
 
 
 class OddsManager:
-    def __init__(self, tan_odds_list, fuku_min_odds_list, umaren_odds_list, wide_min_odds_list, umatan_odds_list, trio_odds_list, trifecta_odds_list):
+    def __init__(self, tan_odds_list, fuku_min_odds_list, umaren_odds_list, wide_min_odds_list, umatan_odds_list,
+                 trio_odds_list, trifecta_odds_list):
         self.tan_odds_list = tan_odds_list
         self.fuku_min_odds_list = fuku_min_odds_list
         self.umaren_odds_list = umaren_odds_list
@@ -25,6 +26,12 @@ class Odds:
     def to_string(self):
         return 'Odds=[umano={}, odds={}]'.format(
             self.umano, self.odds)
+
+    def to_csv(self, denomination):
+        return '{},{},{}'.format(
+            denomination,
+            self.umano,
+            self.odds)
 
 
 def get_odds_manager(opdt, race_course, rno):
@@ -52,7 +59,8 @@ def get_odds_manager(opdt, race_course, rno):
 
     driver.quit()
 
-    return OddsManager(tan_odds_list, fuku_min_odds_list, umaren_odds_list, wide_min_odds_list, umatan_odds_list, trio_odds_list, trifecta_odds_list)
+    return OddsManager(tan_odds_list, fuku_min_odds_list, umaren_odds_list, wide_min_odds_list, umatan_odds_list,
+                       trio_odds_list, trifecta_odds_list)
 
 
 # netkeibaのrace_idを取得
@@ -86,6 +94,7 @@ def login_netkeiba(driver):
     driver.find_element_by_css_selector('input[alt="ログイン"]').click()
 
     time.sleep(3)
+
 
 # 単勝オッズを取得
 def get_tan_odds_list(netkeiba_race_id, driver):
@@ -162,7 +171,7 @@ def get_umaren_odds_list(netkeiba_race_id, driver):
         himo_odds = jiku_block.find_all('span', class_='transition-color')
         for i in range(len(himo_numbers)):
             himo_umano = himo_numbers[i].string.zfill(2)
-            if (len(himo_odds)-1) < i:
+            if (len(himo_odds) - 1) < i:
                 continue
             odds = float(himo_odds[i].string)
             umaren_odds_list.append(Odds(f'{jiku_umano}-{himo_umano}', odds))
@@ -189,7 +198,7 @@ def get_wide_min_odds_list(netkeiba_race_id, driver):
         wide_odds = jiku_block.find_all('span', class_='transition-color')
         for i in range(len(himo_numbers)):
             himo_umano = himo_numbers[i].string.zfill(2)
-            if (len(wide_odds)-1) < i:
+            if (len(wide_odds) - 1) < i:
                 continue
             odds = float(wide_odds[i].string)
             wide_min_odds_list.append(Odds(f'{jiku_umano}-{himo_umano}', odds))
@@ -217,7 +226,7 @@ def get_umatan_odds_list(netkeiba_race_id, driver):
         umatan_odds = jiku_block.find_all('span', class_='transition-color')
         for i in range(len(himo_numbers)):
             himo_umano = himo_numbers[i].string.zfill(2)
-            if (len(umatan_odds)-1) < i:
+            if (len(umatan_odds) - 1) < i:
                 continue
             odds = float(umatan_odds[i].string)
             umatan_odds_list.append(Odds(f'{jiku_umano}-{himo_umano}', odds))
@@ -295,3 +304,35 @@ def get_webdriver(options):
             executable_path='./driver/chromedriver')
 
     return None
+
+
+def write_csv(odds_manager, yumachan):
+    print(f'オッズをcsvファイルに出力中...')
+    make_odds_dir()
+    odds_list = []
+    for tan_odds in odds_manager.tan_odds_list:
+        odds_list.append(tan_odds.to_csv('TANSYO'))
+    for fuku_min_odds in odds_manager.fuku_min_odds_list:
+        odds_list.append(fuku_min_odds.to_csv('FUKUSYO'))
+    for umaren_odds in odds_manager.umaren_odds_list:
+        odds_list.append(umaren_odds.to_csv('UMAREN'))
+    for wide_min_odds in odds_manager.wide_min_odds_list:
+        odds_list.append(wide_min_odds.to_csv('WIDE'))
+    for umatan_odds in odds_manager.umatan_odds_list:
+        odds_list.append(umatan_odds.to_csv('UMATAN'))
+    for trio_odds in odds_manager.trio_odds_list:
+        odds_list.append(trio_odds.to_csv('SANRENPUKU'))
+    for trifecta_odds in odds_manager.trifecta_odds_list:
+        odds_list.append(trifecta_odds.to_csv('SANRENTAN'))
+
+    with open('./odds/odds' + f'_{yumachan.opdt}_{yumachan.race_course.cd}_{yumachan.rno}.csv', 'w') as f:
+        for odds in odds_list:
+            f.write(odds + '\n')
+
+
+# oddsフォルダがなかったら作成する
+def make_odds_dir():
+    if not os.path.isdir('./odds'):
+        os.mkdir('./odds')
+    else:
+        pass

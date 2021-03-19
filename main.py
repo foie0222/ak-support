@@ -1,7 +1,7 @@
 import sys
 import time
 import openpyxl
-from odds import get_odds_manager
+from odds import get_odds_manager, write_csv
 from yumachan import get_yumachan, get_race_course_from_cd
 from ticket import make_ticket, make_csv, make_trifecta_ticket
 from util import get_time_stamp
@@ -34,6 +34,9 @@ def main(target_refund):
     # ipatgoで投票
     vote(csv_list, 0)
     vote(trifecta_csv_list, 1)
+
+    # oddsをcsvに吐き出す
+    write_csv(odds_manager, yumachan)
 
     elapsed_time = time.time() - start
     print(f'完了！処理時間 : {round(elapsed_time, 2)}[秒]')
